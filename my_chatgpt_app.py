@@ -10,10 +10,11 @@ from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
 import os
 
-#api_key = st.secrets.OpenAIAPI.openai_api_key
-api_key = st.secrets["openai_api_key"]
+# Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
+openai.api_key = st.secrets.OpenAIAPI.openai_api_key
+
 #api_key = os.environ["openai_api_key"]
-client = OpenAI(api_key=api_key)
+client = OpenAI(api_key=openai.api_key)
 
 def transcribe_audio_to_text(audio_bytes):
     # Create a temporary file and write the audio bytes to it
