@@ -1,7 +1,7 @@
 import streamlit as st
 from langchain.chat_models import ChatOpenAI
 import openai
-from openai import OpenAI
+#from openai import OpenAI
 from langchain.schema import (SystemMessage, HumanMessage, AIMessage)
 import io
 from streamlit.components.v1 import html
@@ -14,7 +14,8 @@ import os
 openai.api_key = st.secrets.OpenAIAPI.openai_api_key
 
 #api_key = os.environ["openai_api_key"]
-client = OpenAI(api_key=openai.api_key)
+#client = OpenAI(api_key=openai.api_key)
+client = openai.api_key
 
 def transcribe_audio_to_text(audio_bytes):
     # Create a temporary file and write the audio bytes to it
