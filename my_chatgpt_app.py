@@ -10,9 +10,9 @@ from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
 import os
 
-openai.api_key = st.secrets.OpenAIAPI.openai_api_key
-
-api_key = os.environ[openai.api_key]
+#api_key = st.secrets.OpenAIAPI.openai_api_key
+api_key = st.secrets["openai_api_key"]
+#api_key = os.environ["openai_api_key"]
 client = OpenAI(api_key=api_key)
 
 def transcribe_audio_to_text(audio_bytes):
