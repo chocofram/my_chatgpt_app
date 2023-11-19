@@ -8,13 +8,12 @@ from streamlit.components.v1 import html
 import base64
 from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
+import os
 
 openai.api_key = st.secrets.OpenAIAPI.openai_api_key
 
-client = OpenAI(
-    # defaults to os.environ.get("OPENAI_API_KEY")
-    api_key=openai.api_key,
-)
+api_key = os.environ[openai.api_key]
+client = OpenAI(api_key=api_key)
 
 def transcribe_audio_to_text(audio_bytes):
     # Create a temporary file and write the audio bytes to it
