@@ -1,0 +1,10 @@
+streamlit
+langchain.chat_models
+openai
+OpenAI
+langchain.schema
+io
+streamlit.components.v1
+base64
+audio_recorder_streamlit
+tempfile
