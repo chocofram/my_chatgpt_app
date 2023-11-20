@@ -22,7 +22,9 @@ client = OpenAI(
 
 def transcribe_audio_to_text(audio_bytes):
     # Create a temporary file and write the audio bytes to it
-    with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
+    with NamedTemporaryFile(delete=True, suffix=".mp3") as temp_file:
+
+   # with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
         temp_file.write(audio_bytes)
         temp_file.seek(0)  # Rewind the file to the beginning
 
