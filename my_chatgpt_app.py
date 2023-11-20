@@ -52,7 +52,7 @@ def play_audio(byte_stream):
 
 
 def main():
-    llm = ChatOpenAI(model="gpt-3.5-turbo",temperature=1)
+    llm = ChatOpenAI(model="gpt-4-1106-preview",temperature=0)
 
     st.set_page_config(
         page_title="せいぶつはかせのChatGPT",
