@@ -22,19 +22,14 @@ client = OpenAI(
 
 def transcribe_audio_to_text(audio_bytes):
     # Create a temporary file and write the audio bytes to it
-    with NamedTemporaryFile(delete=True, suffix=".mp3") as temp_file:
-
-   # with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
+    with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
         temp_file.write(audio_bytes)
         temp_file.seek(0)  # Rewind the file to the beginning
 
-
-        response = openai.Audio.transcribe("whisper-1", temp_file.file)
-
-        #response = client.audio.transcriptions.create(
-            #model="whisper-1",
-            #file=temp_file.file  # Pass the file descriptor directly
-        #)
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=temp_file.file  # Pass the file descriptor directly
+        )
 
     # Assuming `response` has an attribute `text` with the transcribed content
     transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
