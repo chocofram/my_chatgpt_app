@@ -12,7 +12,7 @@ import os
 
 # Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
 openai.api_key = st.secrets.OpenAIAPI.openai_api_key
-
+api_key = st.secrets["openai_api_key"]
 #api_key = os.environ["openai_api_key"]
 #client = OpenAI(api_key=openai.api_key)
 client = openai.api_key
@@ -52,7 +52,8 @@ def play_audio(byte_stream):
 
 
 def main():
-    llm = ChatOpenAI(model="gpt-4-1106-preview",temperature=0)
+    llm = ChatOpenAI(model="gpt-4-1106-preview", temperature=0, openai_api_key=api_key)
+    #llm = ChatOpenAI(model="gpt-4-1106-preview",temperature=0)
 
     st.set_page_config(
         page_title="せいぶつはかせのChatGPT",
