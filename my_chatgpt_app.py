@@ -19,8 +19,20 @@ client = OpenAI(
 )
 #client = openai.api_key
 
-
 def transcribe_audio_to_text(audio_bytes):
+    # Use io.BytesIO to create a file-like object from bytes
+    audio_stream = io.BytesIO(audio_bytes)
+
+    # Pass the file-like object directly to the OpenAI API
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=audio_stream
+    )
+
+    transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
+    return transcription_text
+
+def transcribe_audio_to_text1(audio_bytes):
     # Create a temporary file and write the audio bytes to it
     with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
         temp_file.write(audio_bytes)
