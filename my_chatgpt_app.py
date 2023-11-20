@@ -22,15 +22,21 @@ client = OpenAI(
 def transcribe_audio_to_text(audio_bytes):
     # Use io.BytesIO to create a file-like object from bytes
     audio_stream = io.BytesIO(audio_bytes)
+    try:
 
-    # Pass the file-like object directly to the OpenAI API
-    response = client.audio.transcriptions.create(
-        model="whisper-1",
-        file=audio_stream
-    )
+        # Pass the file-like object directly to the OpenAI API
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_stream
+        )
 
-    transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
-    return transcription_text
+        transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
+        return transcription_text
+
+    except openai.BadRequestError as e:
+        # エラーハンドリング
+        print(f"Failed to transcribe audio: {e}")
+        return "音声の転写に失敗しました。"
 
 def transcribe_audio_to_text1(audio_bytes):
     # Create a temporary file and write the audio bytes to it
