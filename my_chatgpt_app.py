@@ -9,6 +9,7 @@ import base64
 from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
 import os
+from pydub import AudioSegment
 
 # Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
 openai.api_key = st.secrets.OpenAIAPI['openai_api_key']
@@ -19,7 +20,25 @@ client = OpenAI(
 )
 #client = openai.api_key
 
-def transcribe_audio_to_text(audio_bytes):
+def transcribe_audio_to_text(audio_bytes, input_format='mp3'):
+    # pydubを使用して音声データを変換
+    audio = AudioSegment.from_file(io.BytesIO(audio_bytes), format=input_format)
+    # io.BytesIOオブジェクトに変換されたWAVデータを書き込む
+    buffer = io.BytesIO()
+    audio.export(buffer, format="wav")
+    buffer.seek(0)
+
+    # OpenAIのAPIに変換されたデータを渡して転写
+    response = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=buffer
+    )
+
+    # 転写されたテキストを取得
+    transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
+    return transcription_text
+
+def transcribe_audio_to_text2(audio_bytes):
     # Use io.BytesIO to create a file-like object from bytes
     audio_stream = io.BytesIO(audio_bytes)
     try:
