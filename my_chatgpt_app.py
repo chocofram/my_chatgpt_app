@@ -26,10 +26,10 @@ def transcribe_audio_to_text(audio_bytes):
         # 例: オーディオのフレームレートやチャンネル数などを確認・変更する
 
         # OpenAIのAPIにバイトデータを渡して転写
-        audio_file.seek(0)  # ファイルの先頭に戻す
-        response = client.audio.transcriptions.create(
+        audio_file.rewind()  # ファイルの先頭に戻す
+        response = openai.Audio.create(
             model="whisper-1",
-            file=audio_file
+            file=io.BytesIO(audio_file.readframes(audio_file.getnframes()))
         )
 
     # 転写されたテキストを取得
