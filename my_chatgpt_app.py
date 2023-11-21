@@ -9,7 +9,7 @@ import base64
 from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
 import os
-import wave
+import audioread
 
 # Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
 openai.api_key = st.secrets.OpenAIAPI['openai_api_key']
@@ -20,21 +20,21 @@ client = OpenAI(
 )
 #client = openai.api_key
 def transcribe_audio_to_text(audio_bytes):
-    # io.BytesIOを使用してバイトデータからWAVファイルを読み込む
-    with wave.open(io.BytesIO(audio_bytes), 'rb') as audio_file:
-        # 必要に応じてオーディオファイルを処理
-        # 例: オーディオのフレームレートやチャンネル数などを確認・変更する
+    # io.BytesIOオブジェクトを使用してバイトデータからオーディオファイルを読み込む
+    with audioread.audio_open(io.BytesIO(audio_bytes)) as audio_file:
+        # オーディオファイルのデータを取得
+        audio_data = b''.join(chunk for chunk in audio_file)
 
         # OpenAIのAPIにバイトデータを渡して転写
-        audio_file.rewind()  # ファイルの先頭に戻す
-        response = client.audio.transcriptions.create(
+        response = openai.Audio.create(
             model="whisper-1",
-            file=io.BytesIO(audio_file.readframes(audio_file.getnframes()))
+            file=io.BytesIO(audio_data)
         )
 
     # 転写されたテキストを取得
     transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
     return transcription_text
+
 def transcribe_audio_to_text1(audio_bytes):
     # Use io.BytesIO to create a file-like object from bytes
     audio_stream = io.BytesIO(audio_bytes)
