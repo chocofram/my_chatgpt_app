@@ -11,6 +11,7 @@ from tempfile import NamedTemporaryFile
 import tempfile
 import os
 import audioread
+import datetime
 
 # Streamlit Community Cloudの「Secrets」からOpenAI API keyを取得
 openai.api_key = st.secrets.OpenAIAPI['openai_api_key']
@@ -21,7 +22,25 @@ client = OpenAI(
 )
 #client = openai.api_key
 
-def transcribe_audio_to_text(audio_bytes):
+def transcribe_audio_to_text(audio_file):
+    # Use io.BytesIO to create a file-like object from bytes
+    #audio_stream = io.BytesIO(audio_bytes)
+    try:
+        # Pass the file-like object directly to the OpenAI API
+        response = client.audio.transcriptions.create(
+            model="whisper-1",
+            file=audio_file
+        )
+
+        transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
+        return transcription_text
+
+    except openai.BadRequestError as e:
+        # エラーハンドリング
+        print(f"Failed to transcribe audio: {e}")
+        return "音声の転写に失敗しました。"
+
+def transcribe_audio_to_text4(audio_bytes):
     # 一時ファイルを作成し、オーディオデータを書き込む
     with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
         temp_file.write(audio_bytes)
@@ -82,7 +101,7 @@ def transcribe_audio_to_text1(audio_bytes):
         print(f"Failed to transcribe audio: {e}")
         return "音声の転写に失敗しました。"
 
-def transcribe_audio_to_text1(audio_bytes):
+def transcribe_audio_to_text3(audio_bytes):
     # Create a temporary file and write the audio bytes to it
     with NamedTemporaryFile(mode='w+b', suffix=".mp3") as temp_file:
         temp_file.write(audio_bytes)
@@ -135,6 +154,13 @@ def main():
 
     # Record audio using Streamlit widget
     audio_bytes = audio_recorder(pause_threshold=1.0)
+    if audio_bytes:
+        st.audio(audio_bytes, format="audio/wav")
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+
+        # save audio file to mp3
+        with open(f"audio_{timestamp}.mp3", "wb") as f:
+            f.write(audio_bytes)
 
     # Convert audio to text using OpenAI Whisper API
     if audio_bytes:
