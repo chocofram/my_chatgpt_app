@@ -25,6 +25,7 @@ client = OpenAI(
 def transcribe_audio_to_text(audio_file):
     # Use io.BytesIO to create a file-like object from bytes
     audio_stream = io.BytesIO(audio_file)
+    audio_stream.name = "from_mic.wav"
     try:
         # Pass the file-like object directly to the OpenAI API
         response = client.audio.transcriptions.create(
