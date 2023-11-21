@@ -8,6 +8,7 @@ from streamlit.components.v1 import html
 import base64
 from audio_recorder_streamlit import audio_recorder
 from tempfile import NamedTemporaryFile
+import tempfile
 import os
 import audioread
 
@@ -19,7 +20,34 @@ client = OpenAI(
     api_key=openai.api_key,
 )
 #client = openai.api_key
+
 def transcribe_audio_to_text(audio_bytes):
+    # 一時ファイルを作成し、オーディオデータを書き込む
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_file:
+        temp_file.write(audio_bytes)
+        temp_file_name = temp_file.name
+
+    try:
+        # audioreadで一時ファイルを開く
+        with audioread.audio_open(temp_file_name) as audio_file:
+            # オーディオファイルのデータを取得
+            audio_data = b''.join(chunk for chunk in audio_file)
+
+            # OpenAIのAPIにバイトデータを渡して転写
+            response = openai.Audio.create(
+                model="whisper-1",
+                file=io.BytesIO(audio_data)
+            )
+
+        # 転写されたテキストを取得
+        transcription_text = response.text if hasattr(response, 'text') else "No transcription attribute found."
+        return transcription_text
+
+    finally:
+        # 一時ファイルを削除
+        os.remove(temp_file_name)
+
+def transcribe_audio_to_text2(audio_bytes):
     # io.BytesIOオブジェクトを使用してバイトデータからオーディオファイルを読み込む
     with audioread.audio_open(io.BytesIO(audio_bytes)) as audio_file:
         # オーディオファイルのデータを取得
