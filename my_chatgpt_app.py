@@ -34,7 +34,7 @@ def transcribe_audio_to_text(audio_bytes):
             audio_data = b''.join(chunk for chunk in audio_file)
 
             # OpenAIのAPIにバイトデータを渡して転写
-            response = openai.Audio.create(
+            response = client.audio.transcriptions.create(
                 model="whisper-1",
                 file=io.BytesIO(audio_data)
             )
