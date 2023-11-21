@@ -27,7 +27,7 @@ def transcribe_audio_to_text(audio_bytes):
 
         # OpenAIのAPIにバイトデータを渡して転写
         audio_file.rewind()  # ファイルの先頭に戻す
-        response = openai.Audio.create(
+        response = client.audio.transcriptions.create(
             model="whisper-1",
             file=io.BytesIO(audio_file.readframes(audio_file.getnframes()))
         )
