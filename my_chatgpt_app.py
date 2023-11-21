@@ -111,7 +111,7 @@ def main():
 
         # チャット履歴の表示
         messages = st.session_state.get('messages', [])
-        for message in messages:
+        for message in reversed(messages):
             if isinstance(message, AIMessage):
                 with st.chat_message('assistant'):
                     st.markdown(message.content)
