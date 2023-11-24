@@ -52,8 +52,8 @@ def play_audio(byte_stream):
     html(audio_html, height=0)  # height=0でウィジェットの表示を隠す
 
 
-def main():
-    llm = ChatOpenAI(model="gpt-4-1106-preview", temperature=0, openai_api_key=openai.api_key)
+def main():#model="gpt-3.5-turbo" or "gpt-4-1106-preview"
+    llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0, openai_api_key=openai.api_key)
     #llm = ChatOpenAI(model="gpt-4-1106-preview",temperature=0)
 
     st.set_page_config(
